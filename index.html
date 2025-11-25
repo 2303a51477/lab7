@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management System</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f0f0;
+            margin: 0;
+        }
+        nav {
+            background: #333;
+            padding: 10px;
+            color: white;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            margin-top: 20px;
+        }
+        .page {
+            display: none;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: blue;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+        .error {
+            border: 2px solid red;
+        }
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('addBook')">Add Book</a>
+    <a onclick="showPage('inventory')">Inventory</a>
+    <a onclick="showPage('cart')">Cart</a>
+</nav>
+
+<div class="container">
+
+    <!-- HOME -->
+    <div id="home" class="page">
+        <h2>Welcome to Library Management System</h2>
+        <p>Total Books: <span id="totalBooks">0</span></p>
+    </div>
+
+    <!-- ADD BOOK -->
+    <div id="addBook" class="page">
+        <h2>Add New Book</h2>
+
+        <input id="title" placeholder="Book Title">
+        <div id="err-title" class="error-msg"></div>
+
+        <input id="author" placeholder="Author Name">
+        <div id="err-author" class="error-msg"></div>
+
+        <input id="year" placeholder="Published Year">
+        <div id="err-year" class="error-msg"></div>
+
+        <button class="btn" onclick="addBook()">Add Book</button>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventory" class="page">
+        <h2>Book Inventory</h2>
+        <table id="inventoryTable">
+            <tr>
+                <th>Title</th><th>Author</th><th>Year</th><th>Add to Cart</th>
+            </tr>
+        </table>
+    </div>
+
+    <!-- CART -->
+    <div id="cart" class="page">
+        <h2>Cart</h2>
+        <table id="cartTable">
+            <tr>
+                <th>Title</th><th>Author</th><th>Year</th>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<script>
+let totalBooks = 0;
+
+function showPage(page) {
+    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+    document.getElementById(page).style.display = "block";
+}
+
+// SHOW HOME ON LOAD
+showPage("home");
+
+function addBook() {
+    let title = document.getElementById("title");
+    let author = document.getElementById("author");
+    let year = document.getElementById("year");
+
+    let valid = true;
+
+    // RESET ERRORS
+    document.getElementById("err-title").innerHTML = "";
+    document.getElementById("err-author").innerHTML = "";
+    document.getElementById("err-year").innerHTML = "";
+    title.classList.remove("error");
+    author.classList.remove("error");
+    year.classList.remove("error");
+
+    // VALIDATION
+    if (title.value.trim() === "") {
+        document.getElementById("err-title").innerHTML = "This field is required";
+        title.classList.add("error");
+        valid = false;
+    }
+    if (author.value.trim() === "") {
+        document.getElementById("err-author").innerHTML = "This field is required";
+        author.classList.add("error");
+        valid = false;
+    }
+    if (year.value.trim() === "") {
+        document.getElementById("err-year").innerHTML = "This field is required";
+        year.classList.add("error");
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    let table = document.getElementById("inventoryTable");
+    let row = table.insertRow();
+
+    row.insertCell(0).innerHTML = title.value;
+    row.insertCell(1).innerHTML = author.value;
+    row.insertCell(2).innerHTML = year.value;
+    row.insertCell(3).innerHTML = `<button class="btn" onclick="addToCart('${title.value}', '${author.value}', '${year.value}')">Add</button>`;
+
+    totalBooks++;
+    document.getElementById("totalBooks").innerHTML = totalBooks;
+
+    // CLEAR INPUTS
+    title.value = "";
+    author.value = "";
+    year.value = "";
+}
+
+function addToCart(t, a, y) {
+    let table = document.getElementById("cartTable");
+    let row = table.insertRow();
+
+    row.insertCell(0).innerHTML = t;
+    row.insertCell(1).innerHTML = a;
+    row.insertCell(2).innerHTML = y;
+
+    alert("Book added to cart!");
+}
+
+</script>
+
+</body>
+</html>
+
